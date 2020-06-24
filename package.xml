@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sempr_ros</name>
+  <version>0.0.0</version>
+  <description>The sempr_ros package</description>
+
+  <maintainer email="nils.niemann@dfki.de">Nils Niemann</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <depend>std_msgs</depend>
+
+</package>

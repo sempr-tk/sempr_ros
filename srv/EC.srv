@@ -1,0 +1,6 @@
+# do something with an Entiy-Component-Pair.
+# Add/Remove/Update-Services used this message definition
+
+ECData data
+---
+string result
