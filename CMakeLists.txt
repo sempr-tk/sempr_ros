@@ -132,6 +132,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
     src/ROSConnectionClient.cpp
+    src/ROSConnectionServer.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${sempr_LIBRARIES} ${catkin_LIBRARIES})
 
