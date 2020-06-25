@@ -9,8 +9,9 @@
 #include "sempr_ros/ExplainTriple.h"
 #include "sempr_ros/ExplainEC.h"
 
-namespace sempr { namespace gui {
+namespace sempr { namespace ros {
 
+    using namespace sempr::gui;
 
 ROSConnectionClient::ROSConnectionClient()
     : nh_("")

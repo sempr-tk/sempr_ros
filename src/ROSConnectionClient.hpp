@@ -1,24 +1,27 @@
+#ifndef SEMPR_ROS_CONNECTIONCLIENT_HPP
+#define SEMPR_ROS_CONNECTIONCLIENT_HPP
+
 #include <sempr-gui/AbstractInterface.hpp>
 
 #include <ros/ros.h>
 #include "sempr_ros/SemprECUpdate.h"
 #include "sempr_ros/SemprTripleUpdate.h"
 
-namespace sempr { namespace gui {
+namespace sempr { namespace ros {
 
 /**
     Implementation of the sempr::gui::AbstractInterface using ROS for the
     communication.
 */
-class ROSConnectionClient : public AbstractInterface {
-    ros::NodeHandle nh_;
-    ros::Subscriber subECUpdates_;
-    ros::Subscriber subTripleUpdates_;
+class ROSConnectionClient : public gui::AbstractInterface {
+    ::ros::NodeHandle nh_;
+    ::ros::Subscriber subECUpdates_;
+    ::ros::Subscriber subTripleUpdates_;
 
-    ros::ServiceClient addEC_, modifyEC_, removeEC_;
-    ros::ServiceClient listTriples_, listEC_, getRules_;
-    ros::ServiceClient getReteNetwork_;
-    ros::ServiceClient explainTriple_, explainEC_;
+    ::ros::ServiceClient addEC_, modifyEC_, removeEC_;
+    ::ros::ServiceClient listTriples_, listEC_, getRules_;
+    ::ros::ServiceClient getReteNetwork_;
+    ::ros::ServiceClient explainTriple_, explainEC_;
 
     void onECUpdate(const sempr_ros::SemprECUpdate& update);
     void onTripleUpdate(const sempr_ros::SemprTripleUpdate& update);
@@ -27,15 +30,18 @@ public:
 
     ROSConnectionClient();
 
-    Graph getReteNetworkRepresentation() override;
-    ExplanationGraph getExplanation(sempr::Triple::Ptr triple) override;
-    ExplanationGraph getExplanation(const ECData &ec) override;
-    std::vector<Rule> getRulesRepresentation() override;
-    std::vector<ECData> listEntityComponentPairs() override;
+    gui::Graph getReteNetworkRepresentation() override;
+    gui::ExplanationGraph getExplanation(sempr::Triple::Ptr triple) override;
+    gui::ExplanationGraph getExplanation(const gui::ECData &ec) override;
+    std::vector<gui::Rule> getRulesRepresentation() override;
+    std::vector<gui::ECData> listEntityComponentPairs() override;
     std::vector<sempr::Triple> listTriples() override;
-    void addEntityComponentPair(const ECData &) override;
-    void modifyEntityComponentPair(const ECData &) override;
-    void removeEntityComponentPair(const ECData &) override;
+    void addEntityComponentPair(const gui::ECData &) override;
+    void modifyEntityComponentPair(const gui::ECData &) override;
+    void removeEntityComponentPair(const gui::ECData &) override;
 };
 
 }}
+
+
+#endif /* include guard: SEMPR_ROS_CONNECTIONCLIENT_HPP */
