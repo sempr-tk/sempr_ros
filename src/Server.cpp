@@ -35,8 +35,13 @@ int main(int argc, char** args)
     // Create a "sempr_data" directory in the working dir if it does not
     // already exist. This is the place where everything will be stored in.
     // TODO: Make this a configuration option/parameter.
-    if (!fs::exists("./sempr_data")) fs::create_directory("./sempr_data");
-    auto db = std::make_shared<SeparateFileStorage>("./sempr_data");
+    //
+    ::ros::NodeHandle nh("~");
+    std::string dbPath;
+    nh.param<std::string>("directory", dbPath, "./sempr_data");
+
+    if (!fs::exists(dbPath)) fs::create_directory(dbPath);
+    auto db = std::make_shared<SeparateFileStorage>(dbPath);
 
     // create a sempr-instance
     Core sempr(db, db); // use the storage for persistence and id generation
