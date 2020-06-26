@@ -29,6 +29,17 @@ class ROSConnectionServer {
 
     sempr::gui::DirectConnection::Ptr connection_;
 
+    // called by the DirectConnection when new EC-stuff is inferred
+    void ecUpdateCallback(
+            gui::AbstractInterface::callback_t::first_argument_type,
+            gui::AbstractInterface::callback_t::second_argument_type);
+
+    // analog to ecUpdateCallback, just for triples
+    void tripleUpdateCallback(
+            gui::AbstractInterface::triple_callback_t::first_argument_type,
+            gui::AbstractInterface::triple_callback_t::second_argument_type);
+
+
 public:
     ROSConnectionServer(sempr::gui::DirectConnection::Ptr connection);
 

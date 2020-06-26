@@ -6,7 +6,7 @@
 namespace sempr { namespace ros {
 
 ROSConnectionServer::ROSConnectionServer(sempr::gui::DirectConnection::Ptr connection)
-    : nh_("~"), connection_(connection)
+    : nh_(""), connection_(connection)
 {
     pubECUpdates_ = nh_.advertise<sempr_ros::SemprECUpdate>("sempr/ECUpdates", 100);
     pubTripleUpdates_ = nh_.advertise<sempr_ros::SemprTripleUpdate>("sempr/TripleUpdates", 100);
@@ -22,6 +22,23 @@ ROSConnectionServer::ROSConnectionServer(sempr::gui::DirectConnection::Ptr conne
     getReteNetwork_ = nh_.advertiseService("sempr/getReteNetwork", &ROSConnectionServer::getReteNetwork, this);
     explainTriple_ = nh_.advertiseService("sempr/explainTriple", &ROSConnectionServer::explainTriple, this);
     explainEC_ = nh_.advertiseService("sempr/explainEC", &ROSConnectionServer::explainEC, this);
+
+
+    connection_->setUpdateCallback(
+        std::bind(
+            &ROSConnectionServer::ecUpdateCallback, this,
+            std::placeholders::_1,
+            std::placeholders::_2
+        )
+    );
+
+    connection_->setTripleUpdateCallback(
+        std::bind(
+            &ROSConnectionServer::tripleUpdateCallback, this,
+            std::placeholders::_1,
+            std::placeholders::_2
+        )
+    );
 }
 
 gui::ECData msgToECData(const sempr_ros::ECData& msg)
@@ -33,6 +50,56 @@ gui::ECData msgToECData(const sempr_ros::ECData& msg)
     data.isComponentMutable = msg.isComponentMutable;
 
     return data;
+}
+
+
+void ROSConnectionServer::ecUpdateCallback(
+        gui::AbstractInterface::callback_t::first_argument_type data,
+        gui::AbstractInterface::callback_t::second_argument_type action)
+{
+    sempr_ros::SemprECUpdate msg;
+    msg.data.componentId = data.componentId;
+    msg.data.componentJSON = data.componentJSON;
+    msg.data.entityId = data.entityId;
+    msg.data.isComponentMutable = data.isComponentMutable;
+
+    switch(action) {
+        case gui::AbstractInterface::Notification::ADDED:
+            msg.updateType = msg.ADDED;
+            break;
+        case gui::AbstractInterface::Notification::REMOVED:
+            msg.updateType = msg.REMOVED;
+            break;
+        case gui::AbstractInterface::Notification::UPDATED:
+            msg.updateType = msg.UPDATED;
+            break;
+    }
+
+    pubECUpdates_.publish(msg);
+}
+
+void ROSConnectionServer::tripleUpdateCallback(
+        gui::AbstractInterface::triple_callback_t::first_argument_type data,
+        gui::AbstractInterface::triple_callback_t::second_argument_type action)
+{
+    sempr_ros::SemprTripleUpdate msg;
+    msg.data.subject = data.getField(sempr::Triple::Field::SUBJECT);
+    msg.data.predicate = data.getField(sempr::Triple::Field::PREDICATE);
+    msg.data.object = data.getField(sempr::Triple::Field::OBJECT);
+
+    switch(action) {
+        case gui::AbstractInterface::Notification::ADDED:
+            msg.updateType = msg.ADDED;
+            break;
+        case gui::AbstractInterface::Notification::REMOVED:
+            msg.updateType = msg.REMOVED;
+            break;
+        case gui::AbstractInterface::Notification::UPDATED:
+            // TODO this must be an error, triples are immutable...
+            break;
+    }
+
+    pubTripleUpdates_.publish(msg);
 }
 
 bool ROSConnectionServer::addEC(sempr_ros::EC::Request& req, sempr_ros::EC::Response& res)
