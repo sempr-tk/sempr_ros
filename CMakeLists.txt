@@ -3,7 +3,7 @@ project(sempr_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
-add_definitions(-Wall -Wno-unknown-pragmas -Wextra -pedantic -Wnon-virtual-dtor)
+add_definitions(-Wall -Wno-unknown-pragmas -Wextra -pedantic -Wnon-virtual-dtor -fPIC)
 
 #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
@@ -144,22 +144,33 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sempr_ros_node.cpp)
+add_executable(${PROJECT_NAME}_server src/Server.cpp)
+target_link_libraries(${PROJECT_NAME}_server
+    ${catkin_LIBRARIES}
+    ${sempr_LIBRARIES}
+    ${PROJECT_NAME}
+)
+
+add_executable(${PROJECT_NAME}_client src/Client.cpp)
+target_link_libraries(${PROJECT_NAME}_client
+    ${catkin_LIBRARIES}
+    ${sempr_LIBRARIES}
+    ${PROJECT_NAME}
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+set_target_properties(${PROJECT_NAME}_server PROPERTIES OUTPUT_NAME sempr PREFIX "")
+set_target_properties(${PROJECT_NAME}_client PROPERTIES OUTPUT_NAME gui PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+
 
 #############
 ## Install ##
