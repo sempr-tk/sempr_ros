@@ -1,8 +1,15 @@
 <launch>
     <arg name="directory" default="sempr_data"
          doc="The path to the directory in which sempr will store persistent data." />
+    <arg name="gui" default="true"
+         doc="Flag to enable/disable starting a sempr gui" />
 
     <node pkg="sempr_ros" type="sempr" name="sempr_server">
         <param name="directory" value="$(arg directory)" />
     </node>
+
+    <group if="$(arg gui)">
+        <node pkg="sempr_ros" type="gui" name="" />
+    </group>
 </launch>
+

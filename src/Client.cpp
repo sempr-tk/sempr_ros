@@ -6,7 +6,7 @@
 
 int main(int argc, char** args)
 {
-    ::ros::init(argc, args, "sempr_gui");
+    ::ros::init(argc, args, "sempr_gui", ::ros::init_options::AnonymousName);
 
     QApplication app(argc, args);
 
