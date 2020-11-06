@@ -4,6 +4,25 @@ This package contains tools to setup a sempr environment in ROS. It implements t
 
 You'll probably want to implement your own sempr-environment-node for your use case and add specific interfaces and data to it. But if you just want to test the capabilities of sempr and/or need only a very basic version to model some rules and data, etc., you can use the nodes provided by this package.
 
+### Provided ros-specific conditions/builtins/effects
+
+#### ros:setParam(name, value)
+
+This effect can be used to set a ros parameter. Be aware that the given values
+will always be treated as strings. Also, a parameter can only be set once, so
+multiple activations of this effect with the same parameter name will lead to
+the parameter being overwritten in an undefined sequence. Furthermore, when a
+single activation of it is retracted, the parameter is **deleted**! The effect
+does not track a history of the values or similar.
+
+Usage example:
+```
+[(<robot> <on> ?area),
+ (?area <recommended_driving_mode> ?mode)
+ ->
+ ros:setParam("/robot/driving_mode" ?mode)]
+```
+
 ### SEMPR (server)
 
 Take a look at `launch/sempr.launch`. This (very simple) launch file starts the server part of sempr, the actual reasoner etc., and can be configured with a path to a directory in which persistent data gets stored. The default value is `sempr_data`, which, when started through roslaunch, will lead to your data being stored in `~/.ros/sempr_data`.
@@ -37,7 +56,9 @@ sempr/explainTriple | Returns a graph representing the paths on which the given 
 
 ### SEMPR-GUI (client)
 
-Use `rosrun sempr_ros gui` to start the gui. This will wait for required services (which are provided by the server) in the `sempr` namespace.
+If not otherwise specified, the launchfile also starts the gui. But you can also
+use `rosrun sempr_ros gui` to start more instances of it. The gui will wait for
+required services (which are provided by the server) in the `sempr` namespace.
 
 ### Editing rules
 

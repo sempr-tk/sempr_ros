@@ -12,6 +12,7 @@
 
 #include <sempr-gui/DirectConnectionBuilder.hpp>
 #include "ROSConnectionServer.hpp"
+#include "nodes/SetParamBuilder.hpp"
 
 
 #include <ros/ros.h>
@@ -66,6 +67,7 @@ int main(int argc, char** args)
     parser.registerNodeBuilder<ECNodeBuilder<Component>>();
     parser.registerNodeBuilder<DirectConnectionBuilder>(directConnection);
     parser.registerNodeBuilder<DirectConnectionTripleBuilder>(directConnection);
+    parser.registerNodeBuilder<sempr::ros::SetParamBuilder>();
 
     // add rules that actually implement the connection into the network
     sempr.addRules(
@@ -73,14 +75,11 @@ int main(int argc, char** args)
         "[connectionTriple: (?s ?p ?o) -> DirectConnectionTriple(?s ?p ?o)]"
     );
 
+
     /*
-    // add rules that allow you to add new rules as data
+    // debug
     sempr.addRules(
-        "[inferRules: (?a <type> <Rules>), EC<TextComponent>(?a ?c),"
-                      "text:value(?text ?c)"
-                      "->"
-                      "constructRules(?text)]"
-        "[extractTriples: EC<TripleContainer>(?e ?c) -> ExtractTriples(?c)]"
+        "[true() -> ros:setParam(\"test\" \"hello!\")]"
     );
     */
 

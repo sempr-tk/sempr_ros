@@ -133,6 +133,8 @@ include_directories(
 add_library(${PROJECT_NAME}
     src/ROSConnectionClient.cpp
     src/ROSConnectionServer.cpp
+    src/nodes/SetParam.cpp
+    src/nodes/SetParamBuilder.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${sempr_LIBRARIES} ${catkin_LIBRARIES})
 
