@@ -135,6 +135,8 @@ add_library(${PROJECT_NAME}
     src/ROSConnectionServer.cpp
     src/nodes/SetParam.cpp
     src/nodes/SetParamBuilder.cpp
+    src/nodes/DynamicReconfigure.cpp
+    src/nodes/DynamicReconfigureBuilder.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${sempr_LIBRARIES} ${catkin_LIBRARIES})
 
