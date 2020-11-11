@@ -14,6 +14,7 @@
 #include "ROSConnectionServer.hpp"
 #include "nodes/SetParamBuilder.hpp"
 #include "nodes/DynamicReconfigureBuilder.hpp"
+#include "nodes/PublishBuilder.hpp"
 
 
 #include <ros/ros.h>
@@ -70,6 +71,7 @@ int main(int argc, char** args)
     parser.registerNodeBuilder<DirectConnectionTripleBuilder>(directConnection);
     parser.registerNodeBuilder<sempr::ros::SetParamBuilder>();
     parser.registerNodeBuilder<sempr::ros::DynamicReconfigureBuilder>();
+    parser.registerNodeBuilder<sempr::ros::PublishBuilder>();
 
     // add rules that actually implement the connection into the network
     sempr.addRules(
@@ -79,8 +81,9 @@ int main(int argc, char** args)
 
 
     // debug
-    sempr.addRules(
+    auto rules = sempr.addRules(
 //        "[true() -> ros:setParam(\"test\" \"hello!\")]"
+/*
         "[true(), sum(?int 21 21), mul(?float 0.5 0.5) \
                  -> ros:dynamicReconfigure(\
                      \"dynconf_test/set_parameters\" \
@@ -88,6 +91,9 @@ int main(int argc, char** args)
                      \"int\"    \"int_param\"    ?int \
                      \"double\" \"double_param\" ?float \
                      \"bool\"   \"bool_param\"   0)]"
+*/
+        "[true(), sum(?int 21 21), mul(?float 0.5 0.5) \
+            -> ros:publish(\"foo/bar/baz\" \"Hello, World!\" ?int ?float)]"
     );
 
 

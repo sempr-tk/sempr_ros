@@ -55,6 +55,7 @@ add_message_files(
     Node.msg
     Edge.msg
     Graph.msg
+    PublishEffect.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -137,6 +138,8 @@ add_library(${PROJECT_NAME}
     src/nodes/SetParamBuilder.cpp
     src/nodes/DynamicReconfigure.cpp
     src/nodes/DynamicReconfigureBuilder.cpp
+    src/nodes/Publish.cpp
+    src/nodes/PublishBuilder.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${sempr_LIBRARIES} ${catkin_LIBRARIES})
 
