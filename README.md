@@ -23,6 +23,54 @@ Usage example:
  ros:setParam("/robot/driving_mode" ?mode)]
 ```
 
+#### ros:dynamicReconfigure
+
+Allows setting parameters using a `dynamic_reconfigure` service. Supports the
+value types `"string", "int", "double"` and `"bool"`, which need to be known at
+parse-time. Name and value of the parameter can be variable. The effect can set
+an arbitrary number of parameters at once.
+
+Usage:
+```
+[... -> ros:dynamicReconfigure(
+            service_name
+            "string"|"int"|"double"|"bool" parameter_name parameter_value
+            "string"|"int"|"double"|"bool" parameter_name parameter_value
+            ...
+        )]
+```
+
+**Note:** The effect ignores all `RETRACT` - i.e., it does not reset a
+parameter.
+
+#### ros:publish
+
+Used to publish ROS messages. Sadly, C++ does not allow the amount of
+introspection required for really flexible behaviour here -- the command line
+tool like `rospub` are hence written in python. Therefor, this effect is
+limited to sending messages of type `sempr_ros/PublishEffect`, which only
+contains a flag indication `ASSERT/UPDATE/RETRACT` and an array of string
+values.
+
+Usage:
+```
+[... -> ros:publish(topic_name string_value [string_value ...])]
+```
+E.g.:
+```
+[true(), sum(?int 21 21), mul(?float 0.5 0.5)
+ ->
+ ros:publish("foo/bar/baz" "Hello, World!" ?int ?float)]
+```
+
+**Note:** The topic name can be either a variable or a constant string. In the
+first case, the topic is advertised right before the first message is sent,
+which most likely leads to loss of the message since the subscribers need some
+time to connect. When using a constant string like in the above example, the
+topic is advertised as soon as the rule is parsed, which should prevent this
+problem. Just insert a sleep between parsing the rules and actually adding data.
+
+
 ### SEMPR (server)
 
 Take a look at `launch/sempr.launch`. This (very simple) launch file starts the server part of sempr, the actual reasoner etc., and can be configured with a path to a directory in which persistent data gets stored. The default value is `sempr_data`, which, when started through roslaunch, will lead to your data being stored in `~/.ros/sempr_data`.
