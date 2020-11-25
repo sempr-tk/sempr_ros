@@ -27,8 +27,21 @@ class Publish : public rete::Production {
 
 public:
     using Ptr = std::shared_ptr<Publish>;
+    /**
+        C'tor for dynamic topics, which are created on the fly during effect
+        execution. One major drawback of this is that the first messages may be
+        lost as possible subscribers need some time to create the connection.
+    */
     Publish(
         rete::PersistentInterpretation<std::string> topic
+    );
+
+    /**
+        C'tor for static topics. The topic is advertised in the c'tor already,
+        making it easy to give subscribers enough time to connect.
+    */
+    Publish(
+        std::unique_ptr<rete::ConstantAccessor<std::string>> topic
     );
 
     void addValue(rete::builtin::NumberToStringConversion value);

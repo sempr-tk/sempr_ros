@@ -56,25 +56,25 @@ rete::Production::Ptr PublishBuilder::buildEffect(
         throw rete::NodeBuilderException(
                 "Wrong number of arguments. Need at least a topic name.");
 
-    rete::PersistentInterpretation<std::string> topic;
+    Publish::Ptr node;
+
     if (args[0].isConst() && args[0].getAST().isString())
     {
-        auto acc = std::make_shared<rete::ConstantAccessor<std::string>>(args[0].getAST());
-        acc->index() = 0;
-        topic = acc->getInterpretation<std::string>()->makePersistent();
+        auto topic = std::make_unique<rete::ConstantAccessor<std::string>>(args[0].getAST());
+        topic->index() = 0;
+        node = std::make_shared<Publish>(std::move(topic));
     }
     else if (args[0].isVariable() && args[0].getAccessor() &&
              args[0].getAccessor()->getInterpretation<std::string>())
     {
-        topic = args[0].getAccessor()->getInterpretation<std::string>()->makePersistent();
+        auto topic = args[0].getAccessor()->getInterpretation<std::string>()->makePersistent();
+        node = std::make_shared<Publish>(std::move(topic));
     }
     else
     {
         throw rete::NodeBuilderException(
                 "First argument must be a string specifying the topic name");
     }
-
-    auto node = std::make_shared<Publish>(std::move(topic));
 
     for (size_t i = 1; i < args.size(); i++)
     {

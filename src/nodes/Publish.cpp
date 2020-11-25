@@ -10,6 +10,20 @@ Publish::Publish(rete::PersistentInterpretation<std::string> topic)
 {
 }
 
+
+Publish::Publish(
+        std::unique_ptr<rete::ConstantAccessor<std::string>> topic)
+    :
+        topic_(topic->getInterpretation<std::string>()->makePersistent())
+{
+    if (topic)
+    {
+        std::string topicName;
+        topic->getInterpretation<std::string>()->getValue(rete::WME::Ptr(), topicName);
+        pubs_[topicName] = nh_.advertise<sempr_ros::PublishEffect>(topicName, 100);
+    }
+}
+
 void Publish::addValue(rete::builtin::NumberToStringConversion value)
 {
     values_.push_back(std::move(value));
