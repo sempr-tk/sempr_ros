@@ -50,6 +50,7 @@ void ROSConnectionClient::onECUpdate(const sempr_ros::SemprECUpdate& update)
     data.componentId = update.data.componentId;
     data.componentJSON = update.data.componentJSON;
     data.isComponentMutable = update.data.isComponentMutable;
+    data.tag = update.data.tag;
 
     AbstractInterface::Notification n;
     switch (update.updateType) {
@@ -124,6 +125,7 @@ std::vector<ECData> ROSConnectionClient::listEntityComponentPairs()
         data.componentJSON = ec.componentJSON;
         data.entityId = ec.entityId;
         data.isComponentMutable = ec.isComponentMutable;
+        data.tag = ec.tag;
 
         ecs.push_back(data);
     }
@@ -154,6 +156,7 @@ void ROSConnectionClient::addEntityComponentPair(const ECData& data)
     ec.request.data.componentJSON = data.componentJSON;
     ec.request.data.entityId = data.entityId;
     ec.request.data.isComponentMutable = data.isComponentMutable;
+    ec.request.data.tag = data.tag;
 
     addEC_.call(ec.request, ec.response);
     // TODO: error handling?
@@ -166,6 +169,7 @@ void ROSConnectionClient::modifyEntityComponentPair(const ECData& data)
     ec.request.data.componentJSON = data.componentJSON;
     ec.request.data.entityId = data.entityId;
     ec.request.data.isComponentMutable = data.isComponentMutable;
+    ec.request.data.tag = data.tag;
 
     modifyEC_.call(ec.request, ec.response);
 }
@@ -177,6 +181,7 @@ void ROSConnectionClient::removeEntityComponentPair(const ECData& data)
     ec.request.data.componentJSON = data.componentJSON;
     ec.request.data.entityId = data.entityId;
     ec.request.data.isComponentMutable = data.isComponentMutable;
+    ec.request.data.tag = data.tag;
 
     removeEC_.call(ec.request, ec.response);
 }
@@ -245,6 +250,7 @@ ExplanationGraph ROSConnectionClient::getExplanation(const ECData& ec)
     explain.request.ec.componentJSON = ec.componentJSON;
     explain.request.ec.entityId = ec.entityId;
     explain.request.ec.isComponentMutable = ec.isComponentMutable;
+    explain.request.ec.tag = ec.tag;
 
     explainEC_.call(explain.request, explain.response);
 

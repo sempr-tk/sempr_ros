@@ -75,7 +75,7 @@ int main(int argc, char** args)
 
     // add rules that actually implement the connection into the network
     sempr.addRules(
-        "[connectionEC: EC<Component>(?e ?c) -> DirectConnection(?e ?c)]"
+        "[connectionEC: EC<Component>(?e ?c ?t) -> DirectConnection(?e ?c ?t)]"
         "[connectionTriple: (?s ?p ?o) -> DirectConnectionTriple(?s ?p ?o)]"
     );
 
@@ -101,7 +101,11 @@ int main(int argc, char** args)
     while (::ros::ok())
     {
         ::ros::spinOnce();
-        sempr.performInference();
+        try {
+            sempr.performInference();
+        } catch (rete::ParserExceptionLocalized& ex) {
+            ROS_ERROR_STREAM(ex.what());
+        }
 
         rate.sleep();
     }

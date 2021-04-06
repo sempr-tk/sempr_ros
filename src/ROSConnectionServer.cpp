@@ -48,6 +48,7 @@ gui::ECData msgToECData(const sempr_ros::ECData& msg)
     data.componentJSON = msg.componentJSON;
     data.entityId = msg.entityId;
     data.isComponentMutable = msg.isComponentMutable;
+    data.tag = msg.tag;
 
     return data;
 }
@@ -62,6 +63,7 @@ void ROSConnectionServer::ecUpdateCallback(
     msg.data.componentJSON = data.componentJSON;
     msg.data.entityId = data.entityId;
     msg.data.isComponentMutable = data.isComponentMutable;
+    msg.data.tag = data.tag;
 
     switch(action) {
         case gui::AbstractInterface::Notification::ADDED:
@@ -162,6 +164,7 @@ bool ROSConnectionServer::listEC(sempr_ros::ListEC::Request&,
         msg.componentJSON = ec.componentJSON;
         msg.entityId = ec.entityId;
         msg.isComponentMutable = ec.isComponentMutable;
+        msg.tag = ec.tag;
 
         res.ecs.push_back(msg);
     }
